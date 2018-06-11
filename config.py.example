@@ -1,0 +1,11 @@
+service = "",
+clients = dict(
+	x = dict(
+		cuit = '',
+		password = '',
+		empresa = dict(
+			nombre = '',
+			cuit = ''
+		)
+	),
+)
