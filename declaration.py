@@ -1,3 +1,4 @@
+from row import Row
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
@@ -5,6 +6,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+import csv
 import time
 import config
 
@@ -14,6 +16,7 @@ class Declaration:
         self.year = data['anio']
         self.month = data['mes']
         self.data = data['datos']
+        self.rows = []
     
     def start(self):
         try:
@@ -91,7 +94,7 @@ class Declaration:
         btn = self.browser.find_element_by_id('button-1129')
         btn.click()
 
-        time.sleep(10)
+        time.sleep(5)
 
     def create(self):
         self.selectYear()
@@ -100,7 +103,7 @@ class Declaration:
         self.save()
 
     def enterSection(self):
-        ddjjSection = "treeview-1034-record-" + str(2018) + "-" + str(config.months["Febrero"])
+        ddjjSection = "treeview-1034-record-" + str(self.year) + "-" + str(config.months[0][self.month])
 
         try:
             _ = WebDriverWait(self.browser, 20).until(EC.presence_of_element_located((By.ID, ddjjSection)))
@@ -110,12 +113,12 @@ class Declaration:
         options = self.browser.find_elements_by_class_name('x-tree-node-text')
 
         for option in options:
-            print(option.text)
             if option.text == 'Retenciones/percepciones':
                 option.click()
                 break
 
-    def newRetention(self, data):
+    def newRetentionOrPerception(self, rowData):
+        time.sleep(5)
         try:
             _ = WebDriverWait(self.browser, 20).until(EC.presence_of_element_located((By.ID, 'button-1191')))
         except TimeoutException:
@@ -124,8 +127,35 @@ class Declaration:
         btn = self.browser.find_element_by_id('button-1191')
         btn.click()
 
+        time.sleep(5)
+
+        cuitElem = self.browser.find_element_by_id('cuitfield-1162-inputEl')
+        cuitElem.send_keys(rowData.cuit)
+
+        btn = self.browser.find_element_by_id('combo-1169-triggerWrap')
+        btn.click()
+
+        boundlist-1223 #lista
+        
+        x-boundlist-item #items
+
     def load(self):
         self.enterSection()
-        for data in self.data:
-            self.newRetention(data)
+        for rowData in self.rows:
+            self.newRetentionOrPerception(rowData)
+            break
         return
+
+    def parseCSV(self):
+        with open(self.data['retenciones'], 'r') as csvfile:
+            first = True
+            spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+            for row in spamreader:
+                if first:
+                    first = False
+                    continue
+
+                r = Row()
+                r.setData(row)
+
+                self.rows.append(r)

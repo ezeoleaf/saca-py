@@ -36,21 +36,6 @@ def crearDDJJ():
     btn.click()
 
 def cargarDDJJ():
-    try:
-        myElem = WebDriverWait(browser, delay).until(EC.presence_of_element_located((By.ID, 'button-1081')))
-    except TimeoutException:
-        print("Loading took too much time!")
-
-    newDDJJ = browser.find_element_by_id('button-1081')
-
-    newDDJJ.click()
-
-    selectAnio()
-
-    selectMes()
-    
-    selectImportacion()
-
     crearDDJJ()
 
 def logout():

@@ -52,6 +52,7 @@ class User:
     def cargarDDJJ(self):
         for declaration in self.declarations:
             dj = Declaration(self.browser, declaration)
+            dj.parseCSV()
             dj.start()
             dj.create()
             dj.load()
